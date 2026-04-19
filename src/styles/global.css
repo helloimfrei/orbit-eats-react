@@ -43,14 +43,22 @@ img {
   display: block;
 }
 
-/* ===== REVIEW ORDER LAYOUT FIX ===== */
+/* ===== PAGE LAYOUT ===== */
 
-/* Ensure page content aligns properly */
 .checkout-page {
   padding: 40px;
 }
 
-/* Grid layout (left + right columns) */
+.checkout-header {
+  margin-bottom: 24px;
+}
+
+.checkout-page-title {
+  font-size: 28px;
+  font-weight: 700;
+}
+
+/* GRID */
 .checkout-grid {
   display: grid;
   grid-template-columns: 2fr 1fr;
@@ -58,48 +66,247 @@ img {
   align-items: start;
 }
 
-/* Cards */
+/* ===== CARD STYLE ===== */
+
 .checkout-card {
+  background: var(--bg-card);
+  border-radius: 14px;
+  padding: 20px;
+  border: 1px solid var(--border);
+  margin-bottom: 16px;
+  width: 100%;
   text-align: left;
 }
 
-/* ===== ORDER SUMMARY FIX ===== */
-
-.checkout-aside {
+.checkout-card * {
   text-align: left;
 }
 
-/* Order items list */
-.order-lines {
-  list-style: none;
-  padding: 0;
-  margin: 0 0 16px 0;
-}
+/* ===== LEFT SIDE ===== */
 
-.order-lines li {
+.card-header {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  margin-bottom: 10px;
+}
+
+.link {
+  font-size: 13px;
+  color: var(--cyan);
+  cursor: pointer;
+}
+
+.map-placeholder {
+  margin-top: 12px;
+  height: 120px;
+  border-radius: 10px;
+  background: var(--bg-surface);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--text-secondary);
   font-size: 14px;
 }
 
-/* Summary rows */
-.summary-rows {
+.delivery-info {
   margin-top: 12px;
+}
+
+.delivery-info .sub {
+  font-size: 13px;
+  color: var(--text-secondary);
+}
+
+.delivery-option {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-top: 14px;
+  padding: 10px;
+  border-radius: 10px;
+  transition: 0.2s;
+}
+
+.delivery-option:hover {
+  background: var(--bg-surface);
+}
+
+.delivery-option.selected {
+  background: rgba(0, 240, 181, 0.08);
+}
+
+.cart-line {
+  display: flex;
+  justify-content: space-between;
+  margin-top: 10px;
+}
+
+.payment-box {
+  margin-top: 10px;
+  padding: 12px;
+  border-radius: 10px;
+  background: var(--bg-surface);
+}
+
+/* ===== RIGHT SIDE ===== */
+
+.checkout-aside {
+  position: sticky;
+  top: 20px;
+}
+
+.store-header {
+  margin-bottom: 12px;
+}
+
+.store-header .sub {
+  font-size: 12px;
+  color: var(--text-secondary);
+}
+
+.store-header h3 {
+  font-size: 18px;
+  font-weight: 700;
+}
+
+.promo-banner {
+  background: rgba(255, 200, 0, 0.1);
+  color: #ffc107;
+  padding: 10px;
+  border-radius: 8px;
+  font-size: 13px;
+  margin-bottom: 12px;
+  cursor: pointer;
+}
+
+/* ===== SUMMARY ===== */
+
+.summary-rows {
+  margin-top: 10px;
 }
 
 .summary-row {
   display: flex;
   justify-content: space-between;
-  align-items: center;
-  margin: 6px 0;
+  margin: 8px 0;
   font-size: 14px;
 }
 
-/* Total row */
-.summary-row-total {
-  margin-top: 12px;
-  font-weight: 700;
+.summary-row span {
+  color: var(--text-secondary);
+}
+
+.summary-row strong {
+  font-weight: 600;
+}
+
+.summary-row.total {
+  margin-top: 14px;
   font-size: 18px;
+  font-weight: 700;
+}
+
+/* ===== TIP SECTION ===== */
+
+.tip-section {
+  margin-top: 16px;
+}
+
+.tip-section h4 {
+  margin-bottom: 8px;
+}
+
+/* ✅ FIXED FONT HERE */
+.tip-options {
+  display: flex;
+  gap: 8px;
+}
+
+.tip-options button {
+  font-family: 'Exo', sans-serif; /* FIX */
+  padding: 6px 10px;
+  border-radius: 8px;
+  border: 1px solid var(--border);
+  background: var(--bg-surface);
+  color: var(--text-primary);
+  cursor: pointer;
+  transition: 0.2s;
+  font-weight: 600;
+}
+
+.tip-options button:hover {
+  background: var(--blue-mid);
+}
+
+.tip-options .active {
+  background: var(--cyan);
+  color: #000;
+}
+
+/* ===== SAVINGS ===== */
+
+.savings-banner {
+  margin-top: 12px;
+  background: rgba(0, 240, 181, 0.1);
+  color: var(--cyan);
+  padding: 12px;
+  border-radius: 10px;
+  font-weight: 600;
+  font-size: 14px;
+  text-align: center;
+}
+
+/* ===== CTA BUTTON (FIXED FONT) ===== */
+
+.place-order-btn {
+  margin-top: 16px;
+  width: 100%;
+
+  font-family: 'Exo', sans-serif; /* FIX */
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+
+  background: var(--cyan);
+  color: #000;
+
+  padding: 14px;
+  border-radius: 12px;
+  border: none;
+
+  font-weight: 700;
+  font-size: 15px;
+
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.place-order-btn:hover {
+  opacity: 0.9;
+  transform: translateY(-1px);
+}
+
+.place-order-btn:active {
+  transform: translateY(0);
+  opacity: 0.85;
+}
+
+.place-order-btn:disabled {
+  background: #555;
+  color: #aaa;
+  cursor: not-allowed;
+}
+
+/* ===== RESPONSIVE ===== */
+
+@media (max-width: 900px) {
+  .checkout-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .checkout-aside {
+    position: static;
+  }
 }
