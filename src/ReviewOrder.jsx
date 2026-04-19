@@ -47,7 +47,7 @@ export default function ReviewOrder() {
   return (
     <main className="checkout-page">
       <header className="checkout-header">
-        <h1 className="checkout-page-title">Review Order</h1>
+        <h1 className="checkout-page-title">Review Order TEST</h1>
       </header>
 
       <div className="checkout-grid">
