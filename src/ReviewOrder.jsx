@@ -6,18 +6,23 @@ import "./styles/review-order.css";
 
 export default function ReviewOrder() {
   const order = {
-    store: "Teriyaki Madness",
-    address: "221 Washington St, Hoboken, NJ 07030",
-    phone: "(201) 555-0198",
+    store: "Orbit Diner",
+    address: "123 Orbit Ave, Houston, TX 77002",
+    phone: "(281) 555-4821",
     payment: "Visa ending in 8267",
-    items: [{ name: "Chicken Bowl", price: 14.75, quantity: 1 }],
-    tax: 3.98,
-    deliveryFee: 0,
-    originalDeliveryFee: 2.49,
-    savings: 2.49,
+    items: [
+      { name: "Galactic Burger", price: 23.0, quantity: 1 },
+      { name: "Moon Fries", price: 6.5, quantity: 1 },
+      { name: "Nebula Soda", price: 4.5, quantity: 1 },
+    ],
+    tax: 2.81,
+    serviceFee: 1.75,
+    deliveryFee: 3.49,
+    originalDeliveryFee: 3.49,
+    savings: 0,
   };
 
-  const [tip, setTip] = useState(4.5);
+  const [tip, setTip] = useState(5.1);
   const [subtotal, setSubtotal] = useState(0);
   const [total, setTotal] = useState(0);
 
@@ -29,7 +34,13 @@ export default function ReviewOrder() {
 
     setSubtotal(sub);
 
-    const final = sub + order.tax + order.deliveryFee + tip;
+    const final =
+      sub +
+      order.tax +
+      order.serviceFee +
+      order.deliveryFee +
+      tip;
+
     setTotal(final);
   }, [tip]);
 
@@ -80,18 +91,6 @@ export default function ReviewOrder() {
             </div>
           </section>
 
-          {/* CART SUMMARY */}
-          <section className="checkout-card">
-            <h2>Cart summary</h2>
-
-            {order.items.map((item, i) => (
-              <div key={i} className="cart-line">
-                <span>{item.name} ×{item.quantity}</span>
-                <strong>${item.price}</strong>
-              </div>
-            ))}
-          </section>
-
           {/* PAYMENT */}
           <section className="checkout-card">
             <h2>Payment and credits</h2>
@@ -112,6 +111,16 @@ export default function ReviewOrder() {
               <h3>{order.store}</h3>
             </div>
 
+            {/* ✅ ITEMS (NOW IN RIGHT PANEL) */}
+            <div className="cart-items-right">
+              {order.items.map((item, i) => (
+                <div key={i} className="summary-row">
+                  <span>{item.name}</span>
+                  <strong>${item.price.toFixed(2)}</strong>
+                </div>
+              ))}
+            </div>
+
             {/* PROMO */}
             <div className="promo-banner">
               🏷 Add $5.25 to save with deals →
@@ -127,19 +136,24 @@ export default function ReviewOrder() {
 
               <div className="summary-row">
                 <span>Delivery Fee</span>
-                <strong>
-                  <s>${order.originalDeliveryFee}</s> $0.00
-                </strong>
+                <strong>${order.deliveryFee.toFixed(2)}</strong>
               </div>
 
               <div className="summary-row">
-                <span>Fees & Tax</span>
+                <span>Service fee</span>
+                <strong>${order.serviceFee.toFixed(2)}</strong>
+              </div>
+
+              <div className="summary-row">
+                <span>Fees & Estimated Tax</span>
                 <strong>${order.tax.toFixed(2)}</strong>
               </div>
 
               <div className="summary-row total">
                 <span>Total before tip</span>
-                <strong>${(subtotal + order.tax).toFixed(2)}</strong>
+                <strong>
+                  ${(subtotal + order.tax + order.serviceFee + order.deliveryFee).toFixed(2)}
+                </strong>
               </div>
 
             </div>
@@ -149,7 +163,7 @@ export default function ReviewOrder() {
               <h4>Dasher Tip</h4>
 
               <div className="tip-options">
-                {[4, 4.5, 5].map((t) => (
+                {[4.0, 4.5, 5.0].map((t) => (
                   <button
                     key={t}
                     className={tip === t ? "active" : ""}
