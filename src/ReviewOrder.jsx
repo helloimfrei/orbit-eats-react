@@ -6,18 +6,18 @@ import "./styles/review-order.css";
 
 export default function ReviewOrder() {
   const order = {
-    address: "123 Main St, Hoboken, NJ",
-    payment: "Visa ending in 1234",
-    items: [
-      { name: "Burger", price: 10, quantity: 2 },
-      { name: "Fries", price: 5, quantity: 1 },
-    ],
-    tax: 2,
-    serviceFee: 1,
-    deliveryFee: 3,
-    tip: 2,
+    store: "Teriyaki Madness",
+    address: "221 Washington St, Hoboken, NJ 07030",
+    phone: "(201) 555-0198",
+    payment: "Visa ending in 8267",
+    items: [{ name: "Chicken Bowl", price: 14.75, quantity: 1 }],
+    tax: 3.98,
+    deliveryFee: 0,
+    originalDeliveryFee: 2.49,
+    savings: 2.49,
   };
 
+  const [tip, setTip] = useState(4.5);
   const [subtotal, setSubtotal] = useState(0);
   const [total, setTotal] = useState(0);
 
@@ -29,15 +29,9 @@ export default function ReviewOrder() {
 
     setSubtotal(sub);
 
-    const finalTotal =
-      sub +
-      order.tax +
-      order.serviceFee +
-      order.deliveryFee +
-      order.tip;
-
-    setTotal(finalTotal);
-  }, []);
+    const final = sub + order.tax + order.deliveryFee + tip;
+    setTotal(final);
+  }, [tip]);
 
   return (
     <main className="checkout-page">
@@ -45,102 +39,144 @@ export default function ReviewOrder() {
         <h1 className="checkout-page-title">Review Order</h1>
       </header>
 
-      <section className="checkout-content">
-        <div className="checkout-grid">
+      <div className="checkout-grid">
 
-          {/* LEFT SIDE */}
-          <div className="checkout-main">
+        {/* LEFT SIDE */}
+        <div className="checkout-main">
 
-            <section className="checkout-card">
-              <h2 className="checkout-card-title">Delivery</h2>
-              <div className="address-block">
-                <label className="field-label">Delivery address</label>
-                <div className="address-text">{order.address}</div>
+          {/* DELIVER TO */}
+          <section className="checkout-card">
+            <div className="card-header">
+              <h2>Deliver to</h2>
+              <span className="link">Pickup instead</span>
+            </div>
+
+            <div className="map-placeholder">📍 Map Preview</div>
+
+            <div className="delivery-info">
+              <p>{order.address}</p>
+              <p className="sub">{order.phone}</p>
+            </div>
+          </section>
+
+          {/* DELIVERY TIME */}
+          <section className="checkout-card">
+            <h2>Delivery time</h2>
+
+            <div className="delivery-option selected">
+              <div>
+                <strong>Standard</strong>
+                <p>25–40 min</p>
               </div>
-            </section>
+              <input type="radio" checked readOnly />
+            </div>
 
-            <section className="checkout-card">
-              <h2 className="checkout-card-title">Payment</h2>
-              <div className="address-block">
-                <label className="field-label">Payment method</label>
-                <div className="address-text">{order.payment}</div>
+            <div className="delivery-option">
+              <div>
+                <strong>Express</strong>
+                <p>20–35 min • +$2.99</p>
               </div>
-            </section>
+              <input type="radio" />
+            </div>
+          </section>
 
-          </div>
+          {/* CART SUMMARY */}
+          <section className="checkout-card">
+            <h2>Cart summary</h2>
 
-          {/* RIGHT SIDE */}
-          <aside className="checkout-aside">
-            <section className="checkout-card">
-
-              <h2 className="checkout-card-title">Order summary</h2>
-
-              {/* ✅ ITEMS (LEFT + RIGHT ALIGN) */}
-              <ul className="order-lines">
-                {order.items.map((item, index) => (
-                  <li key={index}>
-                    <span>{item.name} x{item.quantity}</span>
-                    <span>${item.price * item.quantity}</span>
-                  </li>
-                ))}
-              </ul>
-
-              {/* ✅ SUMMARY ROWS (LEFT + RIGHT ALIGN) */}
-              <div className="summary-rows">
-
-                <div className="summary-row">
-                  <span>Subtotal</span>
-                  <strong>${subtotal}</strong>
-                </div>
-
-                <div className="summary-row">
-                  <span>Sales tax</span>
-                  <strong>${order.tax}</strong>
-                </div>
-
-                <div className="summary-row">
-                  <span>Service fee</span>
-                  <strong>${order.serviceFee}</strong>
-                </div>
-
-                <div className="summary-row">
-                  <span>Delivery fee</span>
-                  <strong>${order.deliveryFee}</strong>
-                </div>
-
-                <div className="summary-row">
-                  <span>Tip</span>
-                  <strong>${order.tip}</strong>
-                </div>
-
-                <div className="summary-row summary-row-total">
-                  <span>Total</span>
-                  <strong>${total}</strong>
-                </div>
-
+            {order.items.map((item, i) => (
+              <div key={i} className="cart-line">
+                <span>{item.name} ×{item.quantity}</span>
+                <strong>${item.price}</strong>
               </div>
+            ))}
+          </section>
 
-              <div className="checkout-place-order-wrap">
-                <button
-                  className="checkout-btn-secondary"
-                  style={{ display: "block", marginBottom: "10px" }}
-                >
-                  Back to checkout
-                </button>
-
-                <button
-                  className="checkout-btn-primary"
-                  onClick={() => alert("Order confirmed!")}
-                >
-                  Confirm order
-                </button>
-              </div>
-
-            </section>
-          </aside>
+          {/* PAYMENT */}
+          <section className="checkout-card">
+            <h2>Payment and credits</h2>
+            <div className="payment-box">
+              {order.payment}
+            </div>
+          </section>
 
         </div>
-      </section>
+
+        {/* RIGHT SIDE */}
+        <aside className="checkout-aside">
+
+          <section className="checkout-card">
+
+            <div className="store-header">
+              <p className="sub">Your cart from</p>
+              <h3>{order.store}</h3>
+            </div>
+
+            {/* PROMO */}
+            <div className="promo-banner">
+              🏷 Add $5.25 to save with deals →
+            </div>
+
+            {/* SUMMARY */}
+            <div className="summary-rows">
+
+              <div className="summary-row">
+                <span>Subtotal</span>
+                <strong>${subtotal.toFixed(2)}</strong>
+              </div>
+
+              <div className="summary-row">
+                <span>Delivery Fee</span>
+                <strong>
+                  <s>${order.originalDeliveryFee}</s> $0.00
+                </strong>
+              </div>
+
+              <div className="summary-row">
+                <span>Fees & Tax</span>
+                <strong>${order.tax.toFixed(2)}</strong>
+              </div>
+
+              <div className="summary-row total">
+                <span>Total before tip</span>
+                <strong>${(subtotal + order.tax).toFixed(2)}</strong>
+              </div>
+
+            </div>
+
+            {/* TIP */}
+            <div className="tip-section">
+              <h4>Dasher Tip</h4>
+
+              <div className="tip-options">
+                {[4, 4.5, 5].map((t) => (
+                  <button
+                    key={t}
+                    className={tip === t ? "active" : ""}
+                    onClick={() => setTip(t)}
+                  >
+                    ${t.toFixed(2)}
+                  </button>
+                ))}
+                <button>Other</button>
+              </div>
+            </div>
+
+            {/* SAVINGS */}
+            <div className="savings-banner">
+              Saving ${order.savings.toFixed(2)} with Deals
+            </div>
+
+            {/* CTA */}
+            <button className="place-order-btn">
+              Place Order • ${total.toFixed(2)}
+            </button>
+
+          </section>
+
+        </aside>
+
+      </div>
     </main>
   );
 }
