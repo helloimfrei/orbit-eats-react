@@ -106,7 +106,7 @@ function AddressSection({ title, data, prefix, onFieldChange }) {
 function OrderSummary({ items, subtotal, tax, serviceFee, deliveryFee, tipAmount, total }) {
   return (
     <SectionCard title="Order summary">
-      <div className="restaurant-name">Orbit Grill</div>
+      <div className="restaurant-name">Orbit Diner</div>
       <ul className="order-lines">
         {items.map((item) => (
           <li key={item.id} className="order-line">
