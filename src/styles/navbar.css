@@ -1,0 +1,92 @@
+.navbar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0.75rem 2rem;
+  background: var(--bg-secondary);
+  border-bottom: 1px solid var(--border);
+  flex-wrap: wrap;
+}
+
+.navbar-logo {
+  font-family: 'Exo', sans-serif;
+  font-weight: 800;
+  font-size: 1.1rem;
+  text-decoration: none;
+  color: var(--cyan);
+}
+
+.navbar-toggle {
+  display: none;
+  background: none;
+  border: none;
+  color: var(--text-primary);
+  font-size: 1.5rem;
+  cursor: pointer;
+}
+
+.navbar-links {
+  display: flex;
+  gap: 1.5rem;
+}
+
+.navbar-links a {
+  text-decoration: none;
+  color: var(--text-secondary);
+  font-family: 'Genos', sans-serif;
+  font-size: 1rem;
+}
+
+.navbar-links a:hover {
+  color: var(--cyan);
+}
+
+.navbar-auth-btn {
+  text-decoration: none;
+  padding: 0.5rem 1.25rem;
+  border: 1px solid var(--purple);
+  border-radius: 4px;
+  color: var(--purple);
+  font-size: 0.95rem;
+  font-family: 'Exo', sans-serif;
+  font-weight: 600;
+}
+
+.navbar-auth-btn:hover {
+  background: var(--purple);
+  color: #fff;
+}
+
+@media (max-width: 768px) {
+  .navbar {
+    padding: 0.75rem 1.25rem;
+  }
+
+  .navbar-toggle {
+    display: block;
+  }
+
+  .navbar-links,
+  .navbar-auth-btn {
+    display: none;
+  }
+
+  .navbar.open .navbar-links {
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+    order: 3;
+    gap: 0.75rem;
+    padding-top: 0.75rem;
+    border-top: 1px solid var(--border);
+    margin-top: 0.75rem;
+  }
+
+  .navbar.open .navbar-auth-btn {
+    display: inline-block;
+    width: 100%;
+    text-align: center;
+    order: 4;
+    margin-top: 0.5rem;
+  }
+}
