@@ -6,6 +6,7 @@ import Restaurants from "./pages/Restaurants.jsx";
 import About from "./pages/About.tsx";
 import Contact from "./pages/Contact.tsx";
 import ReviewOrder from "./ReviewOrder.jsx";
+import Checkout from "./pages/Checkout.jsx";
 import "./styles/global.css";
 
 function App() {
@@ -18,6 +19,7 @@ function App() {
         <Route path="/about" element={<About />} />
         <Route path="/contact" element={<Contact />} />
         <Route path="/review-order" element={<ReviewOrder />} />
+        <Route path="/checkout" element={<Checkout />} />
       </Routes>
       <Footer />
     </>

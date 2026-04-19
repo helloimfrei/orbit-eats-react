@@ -492,6 +492,22 @@
   outline-offset: 3px;
 }
 
+.checkout-inline-success {
+  border: 1px solid rgba(0, 240, 181, 0.4);
+  border-radius: 10px;
+  background: linear-gradient(
+    135deg,
+    rgba(74, 127, 181, 0.18) 0%,
+    rgba(0, 240, 181, 0.1) 100%
+  );
+  padding: 1rem;
+}
+
+.checkout-inline-success p {
+  color: var(--text-secondary);
+  line-height: 1.45;
+}
+
 .checkout-btn-primary.is-loading {
   position: relative;
   color: transparent;

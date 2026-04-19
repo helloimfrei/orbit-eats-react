@@ -1,5 +1,5 @@
 import { useState, type FormEvent } from 'react'
-import './Contact.css'
+import '../styles/Contact.css'
 
 export default function Contact() {
   const [submitted, setSubmitted] = useState(false)
