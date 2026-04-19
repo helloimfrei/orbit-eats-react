@@ -1,7 +1,6 @@
 // TEST CHANGE
 import { useState, useEffect } from "react";
 
-import "./styles/global.css";
 import "./styles/checkout.css";
 import "./styles/review-order.css";
 
