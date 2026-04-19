@@ -1,0 +1,105 @@
+@import url('https://fonts.googleapis.com/css2?family=Exo:wght@400;600;700;800&family=Genos:wght@300;400;500;600&display=swap');
+
+*,
+*::before,
+*::after {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+:root {
+  --bg-primary: #0a0e27;
+  --bg-secondary: #0d1137;
+  --bg-card: #111640;
+  --bg-surface: #1a1f4a;
+  --blue-mid: #4a7fb5;
+  --cyan: #00f0b5;
+  --purple: #b44dff;
+  --yellow: #e8e830;
+  --text-primary: #ffffff;
+  --text-secondary: #a0a8d0;
+  --border: rgba(255, 255, 255, 0.08);
+}
+
+body {
+  font-family: 'Genos', sans-serif;
+  line-height: 1.6;
+  color: var(--text-primary);
+  background: var(--bg-primary);
+}
+
+h1, h2, h3, h4, h5, h6 {
+  font-family: 'Exo', sans-serif;
+}
+
+a {
+  color: inherit;
+}
+
+img {
+  max-width: 100%;
+  height: auto;
+  display: block;
+}
+
+/* ===== REVIEW ORDER LAYOUT FIX ===== */
+
+/* Ensure page content aligns properly */
+.checkout-page {
+  padding: 40px;
+}
+
+/* Grid layout (left + right columns) */
+.checkout-grid {
+  display: grid;
+  grid-template-columns: 2fr 1fr;
+  gap: 24px;
+  align-items: start;
+}
+
+/* Cards */
+.checkout-card {
+  text-align: left;
+}
+
+/* ===== ORDER SUMMARY FIX ===== */
+
+.checkout-aside {
+  text-align: left;
+}
+
+/* Order items list */
+.order-lines {
+  list-style: none;
+  padding: 0;
+  margin: 0 0 16px 0;
+}
+
+.order-lines li {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 10px;
+  font-size: 14px;
+}
+
+/* Summary rows */
+.summary-rows {
+  margin-top: 12px;
+}
+
+.summary-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin: 6px 0;
+  font-size: 14px;
+}
+
+/* Total row */
+.summary-row-total {
+  margin-top: 12px;
+  font-weight: 700;
+  font-size: 18px;
+}
