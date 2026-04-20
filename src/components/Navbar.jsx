@@ -26,6 +26,7 @@ export default function Navbar() {
         <Link to="/contact" onClick={() => setOpen(false)}>Contact</Link>
         <Link to="/review-order" onClick={() => setOpen(false)}>Review Order</Link>
         <Link to="/checkout" onClick={() => setOpen(false)}>Checkout</Link>
+        <Link to="/game" onClick={() => setOpen(false)}>Game</Link>
       </div>
 
       <Link to="#" className="navbar-auth-btn">

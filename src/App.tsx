@@ -7,6 +7,7 @@ import About from "./pages/About.tsx";
 import Contact from "./pages/Contact.tsx";
 import ReviewOrder from "./ReviewOrder.jsx";
 import Checkout from "./pages/Checkout.jsx";
+import Game from "./pages/Game.tsx";
 import "./styles/global.css";
 
 function App() {
@@ -20,6 +21,7 @@ function App() {
         <Route path="/contact" element={<Contact />} />
         <Route path="/review-order" element={<ReviewOrder />} />
         <Route path="/checkout" element={<Checkout />} />
+        <Route path="/game" element={<Game />} />
       </Routes>
       <Footer />
     </>
