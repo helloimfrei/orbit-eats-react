@@ -1,4 +1,3 @@
-// TEST CHANGE
 import { useState, useEffect } from "react";
 
 import "./styles/checkout.css";
