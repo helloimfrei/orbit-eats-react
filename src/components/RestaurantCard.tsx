@@ -1,6 +1,12 @@
 import { Link } from "react-router-dom";
+import { type Restaurant } from "../data/restaurants";
 
-export default function RestaurantCard({ restaurant, variant }) {
+type Props = {
+  restaurant: Restaurant;
+  variant?: "featured";
+};
+
+export default function RestaurantCard({ restaurant, variant }: Props) {
   if (variant === "featured") {
     return (
       <div className="restaurant-card">

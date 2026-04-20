@@ -1,4 +1,15 @@
-const restaurants = [
+export type Restaurant = {
+  id: number;
+  name: string;
+  galaxy: string;
+  cuisine: string;
+  distance: string;
+  deliveryTime: string;
+  tag: string;
+  image: string;
+};
+
+const restaurants: Restaurant[] = [
   {
     id: 1,
     name: "Nebula Bistro",

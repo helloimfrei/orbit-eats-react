@@ -3,8 +3,27 @@ import { useState, useEffect } from "react";
 import "./styles/checkout.css";
 import "./styles/review-order.css";
 
+type OrderItem = {
+  name: string;
+  price: number;
+  quantity: number;
+};
+
+type Order = {
+  store: string;
+  address: string;
+  phone: string;
+  payment: string;
+  items: OrderItem[];
+  tax: number;
+  serviceFee: number;
+  deliveryFee: number;
+  originalDeliveryFee: number;
+  savings: number;
+};
+
 export default function ReviewOrder() {
-  const order = {
+  const order: Order = {
     store: "Orbit Diner",
     address: "123 Orbit Ave, Houston, TX 77002",
     phone: "(281) 555-4821",
@@ -110,7 +129,6 @@ export default function ReviewOrder() {
               <h3>{order.store}</h3>
             </div>
 
-            {/* ✅ ITEMS (NOW IN RIGHT PANEL) */}
             <div className="cart-items-right">
               {order.items.map((item, i) => (
                 <div key={i} className="summary-row">

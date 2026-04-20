@@ -1,12 +1,12 @@
 import { Routes, Route } from "react-router-dom";
-import Navbar from "./components/Navbar.jsx";
-import Footer from "./components/Footer.jsx";
-import Home from "./pages/Home.jsx";
-import Restaurants from "./pages/Restaurants.jsx";
+import Navbar from "./components/Navbar.tsx";
+import Footer from "./components/Footer.tsx";
+import Home from "./pages/Home.tsx";
+import Restaurants from "./pages/Restaurants.tsx";
 import About from "./pages/About.tsx";
 import Contact from "./pages/Contact.tsx";
-import ReviewOrder from "./ReviewOrder.jsx";
-import Checkout from "./pages/Checkout.jsx";
+import ReviewOrder from "./ReviewOrder.tsx";
+import Checkout from "./pages/Checkout.tsx";
 import Game from "./pages/Game.tsx";
 import "./styles/global.css";
 

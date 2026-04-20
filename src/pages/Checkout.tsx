@@ -2,7 +2,40 @@ import { useMemo, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import "../styles/checkout.css";
 
-const ORDER_ITEMS = [
+type OrderItem = {
+  id: number;
+  name: string;
+  quantity: number;
+  price: number;
+};
+
+type Address = {
+  street: string;
+  line2: string;
+  city: string;
+  state: string;
+  zip: string;
+};
+
+type CheckoutForm = {
+  customerName: string;
+  email: string;
+  phone: string;
+  notes: string;
+  deliveryAddress: Address;
+  billingAddress: Address;
+  deliveryTime: string;
+  scheduledDate: string;
+  scheduledSlot: string;
+  paymentMethod: string;
+  cardName: string;
+  cardNumber: string;
+  expiry: string;
+  cvc: string;
+  billingSameAsDelivery: boolean;
+};
+
+const ORDER_ITEMS: OrderItem[] = [
   { id: 1, name: "Galactic Burger", quantity: 2, price: 11.5 },
   { id: 2, name: "Moon Fries", quantity: 1, price: 4.5 },
   { id: 3, name: "Nebula Soda", quantity: 2, price: 3.25 },
@@ -10,14 +43,14 @@ const ORDER_ITEMS = [
 
 const TIP_OPTIONS = [0, 0.1, 0.15, 0.2];
 
-function formatCurrency(amount) {
+function formatCurrency(amount: number) {
   return new Intl.NumberFormat("en-US", {
     style: "currency",
     currency: "USD",
   }).format(amount);
 }
 
-function SectionCard({ title, children }) {
+function SectionCard({ title, children }: { title: string; children: React.ReactNode }) {
   return (
     <section className="checkout-card">
       <h2 className="checkout-card-title">{title}</h2>
@@ -25,6 +58,16 @@ function SectionCard({ title, children }) {
     </section>
   );
 }
+
+type TextFieldProps = {
+  label: string;
+  name: string;
+  value: string;
+  onChange: React.ChangeEventHandler<HTMLInputElement>;
+  placeholder?: string;
+  type?: string;
+  required?: boolean;
+};
 
 function TextField({
   label,
@@ -34,7 +77,7 @@ function TextField({
   placeholder,
   type = "text",
   required = false,
-}) {
+}: TextFieldProps) {
   return (
     <div className="field-group">
       <label className="field-label" htmlFor={name}>
@@ -54,7 +97,14 @@ function TextField({
   );
 }
 
-function AddressSection({ title, data, prefix, onFieldChange }) {
+type AddressSectionProps = {
+  title: string;
+  data: Address;
+  prefix: string;
+  onFieldChange: React.ChangeEventHandler<HTMLInputElement>;
+};
+
+function AddressSection({ title, data, prefix, onFieldChange }: AddressSectionProps) {
   return (
     <div className="address-block">
       <h3 className="checkout-card-subtitle">{title}</h3>
@@ -103,7 +153,17 @@ function AddressSection({ title, data, prefix, onFieldChange }) {
   );
 }
 
-function OrderSummary({ items, subtotal, tax, serviceFee, deliveryFee, tipAmount, total }) {
+type OrderSummaryProps = {
+  items: OrderItem[];
+  subtotal: number;
+  tax: number;
+  serviceFee: number;
+  deliveryFee: number;
+  tipAmount: number;
+  total: number;
+};
+
+function OrderSummary({ items, subtotal, tax, serviceFee, deliveryFee, tipAmount, total }: OrderSummaryProps) {
   return (
     <SectionCard title="Order summary">
       <div className="restaurant-name">Orbit Diner</div>
@@ -150,7 +210,7 @@ function OrderSummary({ items, subtotal, tax, serviceFee, deliveryFee, tipAmount
 
 export default function Checkout() {
   const navigate = useNavigate();
-  const [checkoutForm, setCheckoutForm] = useState({
+  const [checkoutForm, setCheckoutForm] = useState<CheckoutForm>({
     customerName: "",
     email: "",
     phone: "",
@@ -185,28 +245,28 @@ export default function Checkout() {
       : Number((subtotal * tipRate).toFixed(2));
   const total = subtotal + tax + serviceFee + deliveryFee + tipAmount;
 
-  const updateRootField = (event) => {
-    const { name, value, type, checked } = event.target;
+  const updateRootField = (event: React.ChangeEvent<HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement>) => {
+    const { name, value } = event.target;
+    const inp = event.target as HTMLInputElement;
     setCheckoutForm((prev) => ({
       ...prev,
-      [name]: type === "checkbox" ? checked : value,
+      [name]: inp.type === "checkbox" ? inp.checked : value,
     }));
   };
 
-  const updateNestedField = (event) => {
+  const updateNestedField = (event: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = event.target;
     const [group, key] = name.split(".");
-
     setCheckoutForm((prev) => ({
       ...prev,
       [group]: {
-        ...prev[group],
+        ...(prev[group as keyof CheckoutForm] as Address),
         [key]: value,
       },
     }));
   };
 
-  const handlePlaceOrder = (event) => {
+  const handlePlaceOrder = (event: React.FormEvent | React.MouseEvent) => {
     event.preventDefault();
     setIsSubmitting(true);
     window.setTimeout(() => {

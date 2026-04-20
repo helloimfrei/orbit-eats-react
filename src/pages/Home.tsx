@@ -9,7 +9,7 @@ export default function Home() {
   const navigate = useNavigate();
   const featuredRestaurants = restaurants.slice(0, 4);
 
-  const handleSearch = (e) => {
+  const handleSearch = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     navigate("/restaurants");
   };
