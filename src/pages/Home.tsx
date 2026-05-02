@@ -1,17 +1,33 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
+import { fetchRestaurants, type Restaurant } from "../api";
 import RestaurantCard from "../components/RestaurantCard";
-import restaurants from "../data/restaurants";
 import "../styles/home.css";
 
 export default function Home() {
   const [searchQuery, setSearchQuery] = useState("");
+  const [featuredRestaurants, setFeaturedRestaurants] = useState<Restaurant[]>([]);
   const navigate = useNavigate();
-  const featuredRestaurants = restaurants.slice(0, 4);
+
+  useEffect(() => {
+    let active = true;
+
+    fetchRestaurants()
+      .then((restaurants) => {
+        if (active) setFeaturedRestaurants(restaurants.slice(0, 4));
+      })
+      .catch(() => {
+        if (active) setFeaturedRestaurants([]);
+      });
+
+    return () => {
+      active = false;
+    };
+  }, []);
 
   const handleSearch = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    navigate("/restaurants");
+    navigate(`/restaurants${searchQuery ? `?q=${encodeURIComponent(searchQuery)}` : ""}`);
   };
 
   return (
@@ -66,13 +82,19 @@ export default function Home() {
           </Link>
         </div>
         <div className="featured-grid">
-          {featuredRestaurants.map((restaurant) => (
-            <RestaurantCard
-              key={restaurant.id}
-              restaurant={restaurant}
-              variant="featured"
-            />
-          ))}
+          {featuredRestaurants.length > 0 ? (
+            featuredRestaurants.map((restaurant) => (
+              <RestaurantCard
+                key={restaurant.id}
+                restaurant={restaurant}
+                variant="featured"
+              />
+            ))
+          ) : (
+            <p className="featured-empty">
+              Start the local API to load featured restaurants.
+            </p>
+          )}
         </div>
       </section>
 

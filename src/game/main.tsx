@@ -3,7 +3,7 @@ import { createRoot } from 'react-dom/client'
 import './style.css'
 import { GameCanvas } from './GameCanvas'
 
-function GameApp() {
+export function GameApp() {
   return (
     <div className="shell">
       <div className="topbar">

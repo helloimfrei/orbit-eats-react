@@ -1,0 +1,50 @@
+CREATE TABLE IF NOT EXISTS restaurants (
+  id INTEGER PRIMARY KEY AUTOINCREMENT,
+  name TEXT NOT NULL,
+  galaxy TEXT NOT NULL,
+  cuisine TEXT NOT NULL,
+  distance TEXT NOT NULL,
+  delivery_time TEXT NOT NULL,
+  tag TEXT NOT NULL,
+  image TEXT NOT NULL,
+  rating REAL NOT NULL DEFAULT 4.5,
+  delivery_fee REAL NOT NULL DEFAULT 3.49,
+  description TEXT NOT NULL DEFAULT '',
+  address TEXT NOT NULL DEFAULT '',
+  menu_items TEXT NOT NULL DEFAULT '[]'
+);
+
+CREATE TABLE IF NOT EXISTS users (
+  id INTEGER PRIMARY KEY AUTOINCREMENT,
+  name TEXT NOT NULL,
+  email TEXT NOT NULL UNIQUE,
+  password_hash TEXT NOT NULL,
+  created_at TEXT NOT NULL DEFAULT CURRENT_TIMESTAMP
+);
+
+CREATE TABLE IF NOT EXISTS orders (
+  id INTEGER PRIMARY KEY AUTOINCREMENT,
+  user_id INTEGER,
+  customer_name TEXT NOT NULL,
+  email TEXT NOT NULL,
+  phone TEXT NOT NULL,
+  delivery_address TEXT NOT NULL,
+  payment_method TEXT NOT NULL,
+  subtotal REAL NOT NULL,
+  tax REAL NOT NULL,
+  service_fee REAL NOT NULL,
+  delivery_fee REAL NOT NULL,
+  tip REAL NOT NULL,
+  total REAL NOT NULL,
+  created_at TEXT NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  FOREIGN KEY (user_id) REFERENCES users(id)
+);
+
+CREATE TABLE IF NOT EXISTS order_items (
+  id INTEGER PRIMARY KEY AUTOINCREMENT,
+  order_id INTEGER NOT NULL,
+  name TEXT NOT NULL,
+  quantity INTEGER NOT NULL,
+  price REAL NOT NULL,
+  FOREIGN KEY (order_id) REFERENCES orders(id) ON DELETE CASCADE
+);

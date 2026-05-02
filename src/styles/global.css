@@ -215,14 +215,13 @@ img {
   margin-bottom: 8px;
 }
 
-/* ✅ FIXED FONT HERE */
 .tip-options {
   display: flex;
   gap: 8px;
 }
 
 .tip-options button {
-  font-family: 'Exo', sans-serif; /* FIX */
+  font-family: 'Exo', sans-serif;
   padding: 6px 10px;
   border-radius: 8px;
   border: 1px solid var(--border);
@@ -255,13 +254,13 @@ img {
   text-align: center;
 }
 
-/* ===== CTA BUTTON (FIXED FONT) ===== */
+/* ===== CTA BUTTON ===== */
 
 .place-order-btn {
   margin-top: 16px;
   width: 100%;
 
-  font-family: 'Exo', sans-serif; /* FIX */
+  font-family: 'Exo', sans-serif;
 
   display: flex;
   align-items: center;

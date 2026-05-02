@@ -145,6 +145,11 @@
   gap: 1.25rem;
 }
 
+.featured-empty {
+  grid-column: 1 / -1;
+  color: var(--text-secondary);
+}
+
 /* restaurant card (home featured) */
 .restaurant-card {
   border: 1px solid var(--border);

@@ -1,0 +1,86 @@
+.order-submitted-page {
+  min-height: 70vh;
+  display: grid;
+  place-items: center;
+  padding: 2rem;
+}
+
+.order-submitted-panel {
+  width: min(620px, 100%);
+  padding: 2rem;
+  border: 1px solid rgba(0, 240, 181, 0.28);
+  border-radius: 8px;
+  background: var(--bg-card);
+  text-align: center;
+}
+
+.order-submitted-mark {
+  width: 64px;
+  height: 64px;
+  display: grid;
+  place-items: center;
+  margin: 0 auto 1rem;
+  border-radius: 50%;
+  background: var(--cyan);
+  color: var(--bg-primary);
+  font-family: 'Exo', sans-serif;
+  font-size: 2rem;
+  font-weight: 800;
+}
+
+.order-submitted-panel h1 {
+  font-size: 2rem;
+  margin-bottom: 0.5rem;
+}
+
+.order-submitted-panel p {
+  color: var(--text-secondary);
+  font-size: 1.1rem;
+}
+
+.order-submitted-summary {
+  display: grid;
+  gap: 0.75rem;
+  margin: 1.5rem 0;
+  padding: 1rem;
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  background: var(--bg-surface);
+}
+
+.order-submitted-summary div {
+  display: flex;
+  justify-content: space-between;
+  gap: 1rem;
+  text-align: left;
+}
+
+.order-submitted-summary span {
+  color: var(--text-secondary);
+}
+
+.order-submitted-summary strong {
+  color: var(--text-primary);
+}
+
+.order-submitted-actions {
+  display: flex;
+  justify-content: center;
+  gap: 0.75rem;
+  flex-wrap: wrap;
+}
+
+.order-submitted-actions a {
+  text-decoration: none;
+  padding: 0.75rem 1rem;
+  border-radius: 6px;
+  border: 1px solid var(--cyan);
+  color: var(--cyan);
+  font-family: 'Exo', sans-serif;
+  font-weight: 700;
+}
+
+.order-submitted-actions a:first-child {
+  background: var(--cyan);
+  color: var(--bg-primary);
+}

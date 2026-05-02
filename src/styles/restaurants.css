@@ -7,7 +7,7 @@
 }
 
 .browse-title {
-  font-size: 1.5rem;
+  font-size: 1.75rem;
   font-weight: 700;
   color: #fff;
 }
@@ -33,7 +33,7 @@
   background: var(--bg-card);
   border: 1px solid var(--border);
   border-radius: 4px;
-  font-size: 0.95rem;
+  font-size: 1.08rem;
   font-family: 'Genos', sans-serif;
   color: #fff;
   outline: none;
@@ -65,26 +65,32 @@
 }
 
 .filters-label {
-  font-size: 0.9rem;
+  font-size: 1rem;
   color: var(--cyan);
   font-family: 'Exo', sans-serif;
   font-weight: 600;
 }
 
-.filter-btn {
+.filter-btn,
+.filter-select {
   background: var(--bg-card);
   border: 1px solid var(--border);
   border-radius: 4px;
-  padding: 0.4rem 0.9rem;
-  font-size: 0.85rem;
+  padding: 0.55rem 0.95rem;
+  font-size: 1rem;
   font-family: 'Genos', sans-serif;
-  color: var(--text-secondary);
+  color: var(--text-primary);
   cursor: pointer;
   white-space: nowrap;
 }
 
-.filter-btn:hover {
-  border-color: var(--purple);
+.filter-select {
+  min-width: 132px;
+}
+
+.filter-btn:hover,
+.filter-select:hover {
+  border-color: var(--cyan);
   color: var(--text-primary);
 }
 
@@ -93,20 +99,22 @@
   margin-left: 0.2rem;
 }
 
-.sort-btn {
+.sort-btn,
+.sort-select {
   background: var(--bg-surface);
-  border: 1px solid var(--purple);
+  border: 1px solid rgba(0, 240, 181, 0.45);
   border-radius: 4px;
-  padding: 0.4rem 1rem;
-  font-size: 0.85rem;
+  padding: 0.55rem 1rem;
+  font-size: 1rem;
   font-family: 'Genos', sans-serif;
   color: var(--text-primary);
   cursor: pointer;
   white-space: nowrap;
 }
 
-.sort-btn:hover {
-  background: var(--purple);
+.sort-btn:hover,
+.sort-select:hover {
+  background: rgba(0, 240, 181, 0.12);
 }
 
 .results-bar {
@@ -117,7 +125,7 @@
 }
 
 .results-count {
-  font-size: 0.9rem;
+  font-size: 1rem;
   color: var(--text-secondary);
 }
 
@@ -138,13 +146,13 @@
 }
 
 .view-btn.active {
-  background: var(--purple);
-  border-color: var(--purple);
-  color: #fff;
+  background: var(--cyan);
+  border-color: var(--cyan);
+  color: var(--bg-primary);
 }
 
 .view-btn:hover:not(.active) {
-  border-color: var(--purple);
+  border-color: var(--cyan);
   color: var(--text-primary);
 }
 
@@ -154,6 +162,12 @@
   grid-template-columns: repeat(3, 1fr);
   gap: 1.25rem;
   padding: 0.5rem 2rem 2rem;
+}
+
+.restaurant-state {
+  grid-column: 1 / -1;
+  color: var(--text-secondary);
+  padding: 1rem 0;
 }
 
 .restaurant-grid.list-view {
@@ -170,7 +184,7 @@
 }
 
 .restaurant-card {
-  border: 1px solid var(--border);
+  border: 1px solid rgba(0, 240, 181, 0.16);
   border-radius: 8px;
   overflow: hidden;
   background: var(--bg-card);
@@ -192,31 +206,32 @@
 }
 
 .restaurant-card-name {
-  font-size: 1rem;
+  font-size: 1.18rem;
   font-weight: 600;
   margin-bottom: 0.2rem;
 }
 
 .restaurant-card-cuisine {
-  font-size: 0.85rem;
+  font-size: 1rem;
   color: var(--text-secondary);
   margin-bottom: 0.6rem;
 }
 
 .restaurant-card-tags {
   display: flex;
+  flex-wrap: wrap;
   gap: 0.5rem;
   margin-bottom: 0.75rem;
 }
 
 .restaurant-card-tag {
   display: inline-block;
-  padding: 0.2rem 0.6rem;
-  background: rgba(180, 77, 255, 0.15);
-  border: 1px solid rgba(180, 77, 255, 0.3);
+  padding: 0.28rem 0.65rem;
+  background: rgba(0, 240, 181, 0.12);
+  border: 1px solid rgba(0, 240, 181, 0.28);
   border-radius: 3px;
-  font-size: 0.8rem;
-  color: var(--purple);
+  font-size: 0.92rem;
+  color: var(--cyan);
 }
 
 .restaurant-card-btn {
@@ -225,9 +240,9 @@
   text-decoration: none;
   padding: 0.55rem;
   background: var(--bg-surface);
-  border: 1px solid var(--border);
+  border: 1px solid rgba(0, 240, 181, 0.28);
   border-radius: 4px;
-  font-size: 0.9rem;
+  font-size: 1rem;
   font-family: 'Exo', sans-serif;
   font-weight: 600;
   color: var(--text-primary);
@@ -235,8 +250,9 @@
 }
 
 .restaurant-card-btn:hover {
-  background: var(--purple);
-  border-color: var(--purple);
+  background: var(--cyan);
+  border-color: var(--cyan);
+  color: var(--bg-primary);
 }
 
 /* pagination */
@@ -253,7 +269,7 @@
   border: 1px solid var(--border);
   border-radius: 4px;
   padding: 0.4rem 0.75rem;
-  font-size: 0.9rem;
+  font-size: 1rem;
   font-family: 'Genos', sans-serif;
   color: var(--text-secondary);
   cursor: pointer;
@@ -262,13 +278,13 @@
 }
 
 .page-btn.active {
-  background: var(--purple);
-  border-color: var(--purple);
-  color: #fff;
+  background: var(--cyan);
+  border-color: var(--cyan);
+  color: var(--bg-primary);
 }
 
 .page-btn:hover:not(.active):not(:disabled) {
-  border-color: var(--purple);
+  border-color: var(--cyan);
   color: var(--text-primary);
 }
 

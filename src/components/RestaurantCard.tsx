@@ -1,5 +1,5 @@
 import { Link } from "react-router-dom";
-import { type Restaurant } from "../data/restaurants";
+import { type Restaurant } from "../api";
 
 type Props = {
   restaurant: Restaurant;
@@ -21,7 +21,12 @@ export default function RestaurantCard({ restaurant, variant }: Props) {
             {restaurant.galaxy} &middot; {restaurant.distance} &middot;{" "}
             {restaurant.deliveryTime}
           </p>
-          <span className="restaurant-card-tag">{restaurant.tag}</span>
+          <span className="restaurant-card-tag">
+            {restaurant.tag} &middot; {restaurant.rating.toFixed(1)}
+          </span>
+          <Link to={`/restaurants/${restaurant.id}`} className="restaurant-card-btn">
+            View Restaurant
+          </Link>
         </div>
       </div>
     );
@@ -42,9 +47,10 @@ export default function RestaurantCard({ restaurant, variant }: Props) {
         <div className="restaurant-card-tags">
           <span className="restaurant-card-tag">{restaurant.distance}</span>
           <span className="restaurant-card-tag">{restaurant.deliveryTime}</span>
+          <span className="restaurant-card-tag">${restaurant.deliveryFee.toFixed(2)}</span>
         </div>
-        <Link to="#" className="restaurant-card-btn">
-          View Menu
+        <Link to={`/restaurants/${restaurant.id}`} className="restaurant-card-btn">
+          View Restaurant
         </Link>
       </div>
     </div>

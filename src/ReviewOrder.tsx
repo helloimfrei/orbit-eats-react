@@ -1,66 +1,149 @@
-import { useState, useEffect } from "react";
-
+import { useEffect, useMemo, useState } from "react";
+import { useNavigate } from "react-router-dom";
+import { fetchSampleOrder, getStoredUser, submitOrder, type SampleOrder } from "./api";
+import {
+  CART_EVENT,
+  clearCart,
+  getCart,
+  updateCartItemQuantity,
+  type Cart,
+} from "./cart";
 import "./styles/checkout.css";
-import "./styles/review-order.css";
 
-type OrderItem = {
-  name: string;
-  price: number;
-  quantity: number;
-};
+function formatCurrency(amount: number) {
+  return new Intl.NumberFormat("en-US", {
+    style: "currency",
+    currency: "USD",
+  }).format(amount);
+}
 
-type Order = {
-  store: string;
-  address: string;
-  phone: string;
-  payment: string;
-  items: OrderItem[];
-  tax: number;
-  serviceFee: number;
-  deliveryFee: number;
-  originalDeliveryFee: number;
-  savings: number;
+const fallbackOrder: SampleOrder = {
+  store: "Orbit Diner",
+  address: "123 Orbit Ave, Houston, TX 77002",
+  phone: "(281) 555-4821",
+  payment: "Visa ending in 8267",
+  items: [
+    { name: "Galactic Burger", price: 23.0, quantity: 1 },
+    { name: "Moon Fries", price: 6.5, quantity: 1 },
+    { name: "Nebula Soda", price: 4.5, quantity: 1 },
+  ],
+  tax: 2.81,
+  serviceFee: 1.75,
+  deliveryFee: 3.49,
+  savings: 0,
 };
 
 export default function ReviewOrder() {
-  const order: Order = {
-    store: "Orbit Diner",
-    address: "123 Orbit Ave, Houston, TX 77002",
-    phone: "(281) 555-4821",
-    payment: "Visa ending in 8267",
-    items: [
-      { name: "Galactic Burger", price: 23.0, quantity: 1 },
-      { name: "Moon Fries", price: 6.5, quantity: 1 },
-      { name: "Nebula Soda", price: 4.5, quantity: 1 },
-    ],
-    tax: 2.81,
-    serviceFee: 1.75,
-    deliveryFee: 3.49,
-    originalDeliveryFee: 3.49,
-    savings: 0,
-  };
-
-  const [tip, setTip] = useState(5.1);
-  const [subtotal, setSubtotal] = useState(0);
-  const [total, setTotal] = useState(0);
+  const navigate = useNavigate();
+  const user = getStoredUser();
+  const [cart, setCart] = useState<Cart | null>(() => getCart());
+  const [order, setOrder] = useState<SampleOrder>(fallbackOrder);
+  const [customerName, setCustomerName] = useState(user?.name || "Guest Customer");
+  const [email, setEmail] = useState(user?.email || "guest@orbiteats.local");
+  const [phone, setPhone] = useState("(281) 555-4821");
+  const [address, setAddress] = useState(fallbackOrder.address);
+  const [paymentMethod, setPaymentMethod] = useState("card");
+  const [cardName, setCardName] = useState(user?.name || "Guest Customer");
+  const [cardNumber, setCardNumber] = useState("");
+  const [cardExpiry, setCardExpiry] = useState("");
+  const [cardCvc, setCardCvc] = useState("");
+  const [deliveryOption, setDeliveryOption] = useState<"standard" | "express">("standard");
+  const [tip, setTip] = useState(5);
+  const [status, setStatus] = useState("");
+  const [isSubmitting, setIsSubmitting] = useState(false);
 
   useEffect(() => {
-    const sub = order.items.reduce(
-      (acc, item) => acc + item.price * item.quantity,
-      0
-    );
+    let active = true;
 
-    setSubtotal(sub);
+    if (cart) {
+      return undefined;
+    }
 
-    const final =
-      sub +
-      order.tax +
-      order.serviceFee +
-      order.deliveryFee +
-      tip;
+    fetchSampleOrder()
+      .then((sampleOrder) => {
+        if (!active) return;
+        setOrder(sampleOrder);
+        setAddress(sampleOrder.address);
+        setPhone(sampleOrder.phone);
+      })
+      .catch(() => {
+        if (active) setStatus("Using the local sample order until the API is available.");
+      });
 
-    setTotal(final);
-  }, [tip]);
+    return () => {
+      active = false;
+    };
+  }, [cart]);
+
+  useEffect(() => {
+    const syncCart = () => setCart(getCart());
+
+    window.addEventListener("storage", syncCart);
+    window.addEventListener(CART_EVENT, syncCart);
+
+    return () => {
+      window.removeEventListener("storage", syncCart);
+      window.removeEventListener(CART_EVENT, syncCart);
+    };
+  }, []);
+
+  const activeOrder = useMemo(() => {
+    if (!cart) return order;
+
+    return {
+      ...order,
+      store: cart.restaurantName,
+      deliveryFee: cart.deliveryFee,
+      items: cart.items,
+    };
+  }, [cart, order]);
+
+  const subtotal = useMemo(
+    () => activeOrder.items.reduce((sum, item) => sum + item.price * item.quantity, 0),
+    [activeOrder.items]
+  );
+  const tax = Number((subtotal * 0.0825).toFixed(2));
+  const serviceFee = activeOrder.serviceFee;
+  const deliveryFee = activeOrder.deliveryFee + (deliveryOption === "express" ? 2.99 : 0);
+  const totalBeforeTip = subtotal + tax + serviceFee + deliveryFee;
+  const total = totalBeforeTip + tip;
+
+  const changeQuantity = (itemName: string, quantity: number) => {
+    updateCartItemQuantity(itemName, quantity);
+  };
+
+  const placeOrder = async () => {
+    setIsSubmitting(true);
+    setStatus("");
+
+    try {
+      const result = await submitOrder({
+        customerName,
+        email,
+        phone,
+        deliveryAddress: address,
+        paymentMethod,
+        deliveryFee,
+        tip,
+        items: activeOrder.items,
+      });
+      if (cart) {
+        clearCart();
+      }
+      navigate("/order-submitted", {
+        state: {
+          orderId: result.orderId,
+          total: result.total,
+          store: activeOrder.store,
+          email,
+        },
+      });
+    } catch (error) {
+      setStatus(error instanceof Error ? error.message : "Could not place order.");
+    } finally {
+      setIsSubmitting(false);
+    }
+  };
 
   return (
     <main className="checkout-page">
@@ -69,144 +152,266 @@ export default function ReviewOrder() {
       </header>
 
       <div className="checkout-grid">
-
-        {/* LEFT SIDE */}
         <div className="checkout-main">
-
-          {/* DELIVER TO */}
           <section className="checkout-card">
             <div className="card-header">
               <h2>Deliver to</h2>
               <span className="link">Pickup instead</span>
             </div>
 
-            <div className="map-placeholder">📍 Map Preview</div>
+            <div className="map-placeholder">Map Preview</div>
 
-            <div className="delivery-info">
-              <p>{order.address}</p>
-              <p className="sub">{order.phone}</p>
+            <div className="field-row field-row-2">
+              <label className="field-group">
+                <span className="field-label">Name</span>
+                <input
+                  className="field-input"
+                  value={customerName}
+                  onChange={(event) => setCustomerName(event.target.value)}
+                />
+              </label>
+              <label className="field-group">
+                <span className="field-label">Phone</span>
+                <input
+                  className="field-input"
+                  value={phone}
+                  onChange={(event) => setPhone(event.target.value)}
+                />
+              </label>
             </div>
+
+            <label className="field-group">
+              <span className="field-label">Email</span>
+              <input
+                className="field-input"
+                type="email"
+                value={email}
+                onChange={(event) => setEmail(event.target.value)}
+              />
+            </label>
+
+            <label className="field-group">
+              <span className="field-label">Delivery address</span>
+              <input
+                className="field-input"
+                value={address}
+                onChange={(event) => setAddress(event.target.value)}
+              />
+            </label>
           </section>
 
-          {/* DELIVERY TIME */}
           <section className="checkout-card">
-            <h2>Delivery time</h2>
-
-            <div className="delivery-option selected">
+            <h2 className="checkout-card-title">Delivery time</h2>
+            <label
+              className={`delivery-option${deliveryOption === "standard" ? " selected" : ""}`}
+            >
               <div>
                 <strong>Standard</strong>
-                <p>25–40 min</p>
+                <p>25-40 min</p>
               </div>
-              <input type="radio" checked readOnly />
-            </div>
+              <input
+                type="radio"
+                name="deliveryOption"
+                value="standard"
+                checked={deliveryOption === "standard"}
+                onChange={() => setDeliveryOption("standard")}
+              />
+            </label>
 
-            <div className="delivery-option">
+            <label
+              className={`delivery-option${deliveryOption === "express" ? " selected" : ""}`}
+            >
               <div>
                 <strong>Express</strong>
-                <p>20–35 min • +$2.99</p>
+                <p>20-35 min, +$2.99</p>
               </div>
-              <input type="radio" />
-            </div>
+              <input
+                type="radio"
+                name="deliveryOption"
+                value="express"
+                checked={deliveryOption === "express"}
+                onChange={() => setDeliveryOption("express")}
+              />
+            </label>
           </section>
 
-          {/* PAYMENT */}
           <section className="checkout-card">
-            <h2>Payment and credits</h2>
-            <div className="payment-box">
-              {order.payment}
+            <h2 className="checkout-card-title">Payment</h2>
+            <div className="payment-methods">
+              {[
+                ["card", "Credit Card"],
+                ["applepay", "Apple Pay"],
+                ["cash", "Cash at delivery"],
+              ].map(([value, label]) => (
+                <label
+                  className={`payment-method${paymentMethod === value ? " is-selected" : ""}`}
+                  key={value}
+                >
+                  <input
+                    type="radio"
+                    name="paymentMethod"
+                    value={value}
+                    checked={paymentMethod === value}
+                    onChange={(event) => setPaymentMethod(event.target.value)}
+                  />
+                  <span className="payment-method-label">{label}</span>
+                </label>
+              ))}
             </div>
-          </section>
 
+            {paymentMethod === "card" && (
+              <div className="fake-card-fields">
+                <label className="field-group">
+                  <span className="field-label">Name on card</span>
+                  <input
+                    className="field-input"
+                    value={cardName}
+                    onChange={(event) => setCardName(event.target.value)}
+                    placeholder="Jamie Parker"
+                  />
+                </label>
+                <label className="field-group">
+                  <span className="field-label">Card number</span>
+                  <input
+                    className="field-input"
+                    inputMode="numeric"
+                    value={cardNumber}
+                    onChange={(event) => setCardNumber(event.target.value)}
+                    placeholder="4242 4242 4242 4242"
+                    maxLength={19}
+                  />
+                </label>
+                <div className="field-row field-row-2">
+                  <label className="field-group">
+                    <span className="field-label">Expiry</span>
+                    <input
+                      className="field-input"
+                      value={cardExpiry}
+                      onChange={(event) => setCardExpiry(event.target.value)}
+                      placeholder="MM/YY"
+                      maxLength={5}
+                    />
+                  </label>
+                  <label className="field-group">
+                    <span className="field-label">CVC</span>
+                    <input
+                      className="field-input"
+                      inputMode="numeric"
+                      value={cardCvc}
+                      onChange={(event) => setCardCvc(event.target.value)}
+                      placeholder="123"
+                      maxLength={4}
+                    />
+                  </label>
+                </div>
+                <p className="fake-card-note">Demo only. No payment is processed.</p>
+              </div>
+            )}
+          </section>
         </div>
 
-        {/* RIGHT SIDE */}
         <aside className="checkout-aside">
-
           <section className="checkout-card">
-
             <div className="store-header">
               <p className="sub">Your cart from</p>
-              <h3>{order.store}</h3>
+              <h3>{activeOrder.store}</h3>
             </div>
 
             <div className="cart-items-right">
-              {order.items.map((item, i) => (
-                <div key={i} className="summary-row">
-                  <span>{item.name}</span>
-                  <strong>${item.price.toFixed(2)}</strong>
+              {activeOrder.items.map((item) => (
+                <div key={item.name} className="cart-item-row">
+                  <div>
+                    <span>{item.name}</span>
+                    <strong>{formatCurrency(item.price * item.quantity)}</strong>
+                  </div>
+                  {cart ? (
+                    <div className="cart-quantity-controls">
+                      <button
+                        type="button"
+                        aria-label={`Remove one ${item.name}`}
+                        onClick={() => changeQuantity(item.name, item.quantity - 1)}
+                      >
+                        -
+                      </button>
+                      <span>{item.quantity}</span>
+                      <button
+                        type="button"
+                        aria-label={`Add one ${item.name}`}
+                        onClick={() => changeQuantity(item.name, item.quantity + 1)}
+                      >
+                        +
+                      </button>
+                    </div>
+                  ) : (
+                    <span className="cart-static-quantity">x{item.quantity}</span>
+                  )}
                 </div>
               ))}
             </div>
 
-            {/* PROMO */}
-            <div className="promo-banner">
-              🏷 Add $5.25 to save with deals →
-            </div>
+            {cart && (
+              <button type="button" className="clear-cart-btn" onClick={clearCart}>
+                Clear Cart
+              </button>
+            )}
 
-            {/* SUMMARY */}
+            <div className="promo-banner">Add $5.25 to save with deals</div>
+
             <div className="summary-rows">
-
               <div className="summary-row">
                 <span>Subtotal</span>
-                <strong>${subtotal.toFixed(2)}</strong>
+                <strong>{formatCurrency(subtotal)}</strong>
               </div>
-
               <div className="summary-row">
-                <span>Delivery Fee</span>
-                <strong>${order.deliveryFee.toFixed(2)}</strong>
+                <span>Delivery fee</span>
+                <strong>{formatCurrency(deliveryFee)}</strong>
               </div>
-
               <div className="summary-row">
                 <span>Service fee</span>
-                <strong>${order.serviceFee.toFixed(2)}</strong>
+                <strong>{formatCurrency(serviceFee)}</strong>
               </div>
-
               <div className="summary-row">
-                <span>Fees & Estimated Tax</span>
-                <strong>${order.tax.toFixed(2)}</strong>
+                <span>Estimated tax</span>
+                <strong>{formatCurrency(tax)}</strong>
               </div>
-
               <div className="summary-row total">
                 <span>Total before tip</span>
-                <strong>
-                  ${(subtotal + order.tax + order.serviceFee + order.deliveryFee).toFixed(2)}
-                </strong>
+                <strong>{formatCurrency(totalBeforeTip)}</strong>
               </div>
-
             </div>
 
-            {/* TIP */}
             <div className="tip-section">
-              <h4>Dasher Tip</h4>
-
+              <h4>Courier Tip</h4>
               <div className="tip-options">
-                {[4.0, 4.5, 5.0].map((t) => (
+                {[3, 4, 5, 6].map((value) => (
                   <button
-                    key={t}
-                    className={tip === t ? "active" : ""}
-                    onClick={() => setTip(t)}
+                    type="button"
+                    key={value}
+                    className={tip === value ? "active" : ""}
+                    onClick={() => setTip(value)}
                   >
-                    ${t.toFixed(2)}
+                    {formatCurrency(value)}
                   </button>
                 ))}
-                <button>Other</button>
               </div>
             </div>
 
-            {/* SAVINGS */}
             <div className="savings-banner">
-              Saving ${order.savings.toFixed(2)} with Deals
+              Saving {formatCurrency(activeOrder.savings)} with Deals
             </div>
 
-            {/* CTA */}
-            <button className="place-order-btn">
-              Place Order • ${total.toFixed(2)}
+            {status && <p className="checkout-status">{status}</p>}
+
+            <button
+              className="place-order-btn"
+              type="button"
+              disabled={isSubmitting}
+              onClick={placeOrder}
+            >
+              {isSubmitting ? "Placing Order..." : `Place Order - ${formatCurrency(total)}`}
             </button>
-
           </section>
-
         </aside>
-
       </div>
     </main>
   );
